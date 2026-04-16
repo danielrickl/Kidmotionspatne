@@ -30,4 +30,20 @@ git push origin main
 ```
 
 Action se automaticky postará o build a publikaci do `gh-pages`.
+ 
+ Poznámka o `package-lock.json` a `npm ci`:
+ 
+ - Workflow preferuje `npm ci` (instaluje přesně podle `package-lock.json`). Pokud `package-lock.json` v repu chybí, workflow spustí `npm install` jako zálohu.
+ - Doporučuji vygenerovat reálný `package-lock.json` lokálně a commitnout ho, aby `npm ci` v CI byla deterministická.
+ 
+ Lokálně vygenerujete a commitnete lockfile těmito příkazy:
+ 
+ ```powershell
+ npm install
+ git add package-lock.json
+ git commit -m "Add package-lock.json"
+ git push origin main
+ ```
+ 
+ Po pushi se workflow znovu spustí a použije `npm ci` (pokud je `package-lock.json` v repu).
 
