@@ -5,13 +5,20 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+  pages: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: false
+          # Keep credentials so subsequent steps (or actions) can push.
+          persist-credentials: true
+          # Fetch full history so gh-pages action can create proper commits.
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -25,6 +32,11 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Configure git identity for Actions
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
